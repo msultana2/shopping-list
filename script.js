@@ -7,14 +7,14 @@ function addItem(e) {
     const newItem = itemInput.value;
 
     // Validate Input
+    
     if(newItem === '') {
         alert('Please add an item');
         return;
     }
 
-    console.log('success');
-
     // Create list item
+
     const li = document.createElement('li');
     li.appendChild(document.createTextNode(newItem));
 
@@ -40,5 +40,12 @@ function createIcon(classes) {
     return icon;
 }
 
+function removeItem(e){
+    if(e.target.parentElement.classList.contains('remove-item')) {
+        e.target.parentElement.parentElement.remove();
+    }
+}
+
 // Event Listeners
 itemForm.addEventListener('submit', addItem);
+itemList.addEventListener('click', removeItem);
