@@ -4,15 +4,17 @@ const itemList = document.getElementById("item-list");
 const clearBtn = document.getElementById("clear");
 const itemFilter = document.getElementById("item-filter");
 
-function displayItems () {
-    const itemsFromStorage = getItemsFromStorage();
+function displayItems() {
+  const itemsFromStorage = getItemsFromStorage();
 
-    itemsFromStorage.forEach(item => addItemToDom(item));
-    checkUI();
+  itemsFromStorage.forEach((item) => addItemToDom(item));
+
+  checkUI();
 }
 
 function onAddItemSubmit(e) {
   e.preventDefault();
+  
   const newItem = itemInput.value;
 
   // Validate Input
@@ -59,39 +61,52 @@ function createIcon(classes) {
 }
 
 function addItemToStorage(item) {
-    const itemsFromStorage = getItemsFromStorage();
+  const itemsFromStorage = getItemsFromStorage();
 
-    // Add new item to array
-    itemsFromStorage.push(item);
+  // Add new item to array
+  itemsFromStorage.push(item);
 
-    // Convert to JSON string and set to local storage
-    localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+  // Convert to JSON string and set to local storage
+  localStorage.setItem("items", JSON.stringify(itemsFromStorage));
 }
 
 function getItemsFromStorage() {
-    let itemsFromStorage;
+  let itemsFromStorage;
 
-    if (localStorage.getItem('items' === null)) {
-        itemsFromStorage = [];
-    } else {
-        itemsFromStorage = JSON.parse(localStorage.getItem('items'));
-    }
+  if (localStorage.getItem("items") === null) {
+    itemsFromStorage = [];
+  } else {
+    itemsFromStorage = JSON.parse(localStorage.getItem("items"));
+  }
 
-    return itemsFromStorage;
+  return itemsFromStorage;
 }
 
 function removeItem(e) {
+  const item = e.target.parentElement.parentElement;
+
   if (e.target.parentElement.classList.contains("remove-item")) {
-    e.target.parentElement.parentElement.remove();
+    item.remove();
+
+    removeItemFromStorage(item.textContent);
+
     checkUI();
   }
 }
 
+function removeItemFromStorage(item) {
+  let itemsFromStorage = getItemsFromStorage();
+
+  itemsFromStorage = itemsFromStorage.filter((i) => i !== item);
+
+  localStorage.setItem("items", JSON.stringify(itemsFromStorage));
+}
+
 function clearItems() {
-  //itemList.innerHTML = '';
   while (itemList.firstChild) {
     itemList.removeChild(itemList.firstChild);
   }
+  localStorage.removeItem("items");
   checkUI();
 }
 
@@ -112,7 +127,7 @@ function filterItems(e) {
 
 function checkUI() {
   const items = document.querySelectorAll("li");
-  console.log(items);
+
   if (items.length === 0) {
     clearBtn.style.display = "none";
     itemFilter.style.display = "none";
@@ -127,10 +142,6 @@ itemForm.addEventListener("submit", onAddItemSubmit);
 itemList.addEventListener("click", removeItem);
 clearBtn.addEventListener("click", clearItems);
 itemFilter.addEventListener("input", filterItems);
-document.addEventListener('DOMContentLoaded', displayItems);
+document.addEventListener("DOMContentLoaded", displayItems);
 
 checkUI();
-
-// localStorage.setItem('Name', 'Brad');
-// console.log(localStorage.getItem('Name'));
-// localStorage.removeItem('Name');
