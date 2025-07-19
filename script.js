@@ -3,6 +3,8 @@ const itemInput = document.getElementById("item-input");
 const itemList = document.getElementById("item-list");
 const clearBtn = document.getElementById("clear");
 const itemFilter = document.getElementById("item-filter");
+const formBtn = itemForm.querySelector("button");
+let isEditMode = false;
 
 function displayItems() {
   const itemsFromStorage = getItemsFromStorage();
@@ -14,7 +16,7 @@ function displayItems() {
 
 function onAddItemSubmit(e) {
   e.preventDefault();
-  
+
   const newItem = itemInput.value;
 
   // Validate Input
@@ -91,6 +93,8 @@ function removeItem(e) {
     removeItemFromStorage(item.textContent);
 
     checkUI();
+  } else {
+    setItemToEdit(e.target);
   }
 }
 
@@ -100,6 +104,19 @@ function removeItemFromStorage(item) {
   itemsFromStorage = itemsFromStorage.filter((i) => i !== item);
 
   localStorage.setItem("items", JSON.stringify(itemsFromStorage));
+}
+
+function setItemToEdit(item) {
+  isEditMode = true;
+
+  itemList
+    .querySelectorAll("li")
+    .forEach((i) => i.classList.remove("edit-mode"));
+
+  item.classList.add("edit-mode");
+  formBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
+  formBtn.style.backgroundColor = "#228B22";
+  itemInput.value = item.textContent;
 }
 
 function clearItems() {
