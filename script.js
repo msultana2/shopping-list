@@ -28,11 +28,17 @@ function onAddItemSubmit(e) {
   // Check for edit mode
   if (isEditMode) {
     const editItem = itemList.querySelector('.edit-mode');
+
     removeItemFromStorage(editItem.textContent);
     editItem.classList.remove('edit-mode');
     editItem.remove();
     isEditMode = false;
-
+  } else {
+    if(checkDuplicateItem(newItem)) {
+      alert('That item already exists!');
+      itemInput.value = '';
+      return;
+    }
   }
 
   // Create item DOM element
@@ -114,6 +120,11 @@ function removeItemFromStorage(item) {
   itemsFromStorage = itemsFromStorage.filter((i) => i !== item);
 
   localStorage.setItem("items", JSON.stringify(itemsFromStorage));
+}
+
+function checkDuplicateItem(item) {
+  const itemsFromStorage = getItemsFromStorage();
+  return itemsFromStorage.includes(item);
 }
 
 function setItemToEdit(item) {
